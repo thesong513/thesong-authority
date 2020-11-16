@@ -14,7 +14,6 @@ import java.io.IOException;
  * @Describe 用户过滤器
  */
 
-@Component
 public class UserFilter implements Filter {
 
     private static Log log = LogFactory.getLog(com.thesong.authority.Filter.UserFilter.class);
