@@ -1,5 +1,7 @@
 package com.thesong.authority.controller;
 
+import com.thesong.common.response.Result;
+import com.thesong.common.response.ResultGenerator;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     @GetMapping("/filter")
-    public String testFilter(){
-        return "filter is ok";
+    public Result testFilter(){
+        return ResultGenerator.genSuccessResult("test");
     }
 }
