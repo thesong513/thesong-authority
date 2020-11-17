@@ -1,9 +1,6 @@
 package com.thesong.common.utils;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.io.IOException;
+import lombok.extern.slf4j.Slf4j;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
@@ -13,10 +10,8 @@ import java.util.Properties;
  * @Version 1.0
  */
 
-
+@Slf4j
 public class Config {
-
-    private static Log log = LogFactory.getLog(com.thesong.common.utils.Config.class);
 
     private static Properties props;
 
@@ -24,16 +19,14 @@ public class Config {
         readProperties("prop.properties");
     }
 
-    public static void readProperties(String configPath){
+    private static void readProperties(String configPath){
         try {
             props = new Properties();
-            InputStreamReader inputStream = new InputStreamReader(
-                    com.thesong.common.utils.Config.class.getClassLoader().getResourceAsStream(configPath), "UTF-8");
+            InputStreamReader inputStream = new InputStreamReader(Config.class.getClassLoader()
+                    .getResourceAsStream(configPath), "UTF-8");
             props.load(inputStream);
-            System.out.println(props);
-        } catch (IOException e) {
-            e.printStackTrace();
-            log.error("配置文件读取失败！");
+        } catch (Exception e) {
+            log.info("配置文件读取失败！", e);
         }
     }
 

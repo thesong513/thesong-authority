@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import java.util.Set;
 
 /**
  * @Author thesong
@@ -14,13 +15,12 @@ import javax.validation.constraints.NotBlank;
  */
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class User {
-    private Integer id;
+    private int id;
     @NotBlank(message = "username can't not be Null！")
     private String username;
     @NotBlank(message = "password can't not be Null！")
     private String password;
-    private String roles;
+    private Set<Role> roles;
 
 }

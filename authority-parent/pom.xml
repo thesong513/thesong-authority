@@ -22,11 +22,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jedis.version>2.9.0</jedis.version>
-        <commons-logging.version>1.2</commons-logging.version>
         <jjwt.version>0.7.0</jjwt.version>
         <joda-time.version>2.9.6</joda-time.version>
         <fastjson.verson>1.2.47</fastjson.verson>
         <lombok.version>1.18.16</lombok.version>
+        <spring.shiro.version>1.6.0</spring.shiro.version>
 
 
     </properties>
@@ -39,11 +39,6 @@
                 <version>${jedis.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-                <version>${commons-logging.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
@@ -67,6 +62,18 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-spring</artifactId>
+                <version>${spring.shiro.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-devtools</artifactId>
+                <scope>runtime</scope>
             </dependency>
 
 
