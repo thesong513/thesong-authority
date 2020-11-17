@@ -2,12 +2,13 @@ package com.thesong.authority;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 
 /**
  * @Author thesong
  * @Date 2020/11/16 17:36
  * @Version 1.0
- * @Describe
+ * @Describe 启动类
  */
 
 @SpringBootApplication

@@ -26,6 +26,7 @@
         <jjwt.version>0.7.0</jjwt.version>
         <joda-time.version>2.9.6</joda-time.version>
         <fastjson.verson>1.2.47</fastjson.verson>
+        <lombok.version>1.18.16</lombok.version>
 
 
     </properties>
@@ -60,6 +61,12 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson.verson}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
             </dependency>
 
 

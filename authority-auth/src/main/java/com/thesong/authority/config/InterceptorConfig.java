@@ -11,7 +11,7 @@ public class InterceptorConfig  extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new UserInterceptor()).addPathPatterns("/**");
+        registry.addInterceptor(new UserInterceptor()).addPathPatterns("/login");
         super.addInterceptors(registry);
     }
 

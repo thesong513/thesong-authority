@@ -17,16 +17,16 @@ import java.security.Key;
  * @Describe
  */
 public class JWTUtil {
-
+    protected static String key = "thesong";
 
     /**
      * 解析accesskey的密文
+     *
      * @param accessKey
-     * @param key
      * @return plain
      */
-    public static Claims parseAccessKey(String accessKey, String key){
-        if("".equals(accessKey)){
+    public static Claims parseAccessKey(String accessKey) {
+        if ("".equals(accessKey)) {
             return null;
         }
         try {
@@ -34,12 +34,19 @@ public class JWTUtil {
                     .setSigningKey(DatatypeConverter.parseBase64Binary(key))
                     .parseClaimsJws(accessKey)
                     .getBody();
-        }catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
 
-    public static String createAccessKey(Integer userId, String userName, String key, int expirSeconds){
+    /**
+     * @param username
+     * @param roles
+     * @param expirDays
+     * @return 密文
+     */
+
+    public static String createAccessKey(String username, String roles, int expirDays) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         //生成签名密钥
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(key);
@@ -48,18 +55,14 @@ public class JWTUtil {
 
         //添加构成JWT的参数
         JwtBuilder builder = Jwts.builder()
-                .claim("userId", userId) // 设置载荷信息
-                .claim("username",userName)
-                .claim("age",23)
-                .setExpiration(DateTime.now().plusMinutes(expirSeconds).toDate()) // 设置超时时间
+                .claim("username", username)
+                .claim("roles", roles)
+                .setExpiration(DateTime.now().plusDays(expirDays).toDate()) // 设置超时时间
                 .signWith(signatureAlgorithm, signingKey);
 
         //生成JWT
         return builder.compact();
     }
-
-
-
 
 
 }

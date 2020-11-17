@@ -15,17 +15,14 @@ public class UserInterceptor implements HandlerInterceptor {
 
     private static Log log = LogFactory.getLog(com.thesong.authority.interceptor.UserInterceptor.class);
 
+
+
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         String accessKey = httpServletRequest.getHeader("access-key");
         log.info(accessKey);
-        if()
-        httpServletResponse.sendError(HttpStatus.FORBIDDEN.value());
-
         return true;
     }
-
-
 
 
 
