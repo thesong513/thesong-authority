@@ -1,4 +1,4 @@
-package com.thesong.authority.shrio;
+package com.thesong.authority.shiro;
 
 import com.thesong.authority.entity.Permissions;
 import com.thesong.authority.entity.Role;

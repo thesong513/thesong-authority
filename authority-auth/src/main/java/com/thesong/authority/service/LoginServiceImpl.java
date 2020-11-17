@@ -4,6 +4,7 @@ import com.thesong.authority.entity.Permissions;
 import com.thesong.authority.entity.Role;
 import com.thesong.authority.entity.User;
 import com.thesong.authority.service.LoginService;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,6 +17,8 @@ import java.util.Set;
  * @Version 1.0
  * @Describe
  */
+
+@Service
 public class LoginServiceImpl implements LoginService {
     @Override
     public User getUserByName(String username) {

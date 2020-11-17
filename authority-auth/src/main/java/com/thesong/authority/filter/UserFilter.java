@@ -22,7 +22,7 @@ public class UserFilter implements Filter {
 
     private static Log log = LogFactory.getLog(UserFilter.class);
 
-    String[] includeUrls = new String[]{"/user/login","/user/register"};
+    String[] includeUrls = new String[]{"/user/login","/user/register","/user/test"};
 
 
     @Override

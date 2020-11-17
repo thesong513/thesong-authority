@@ -35,60 +35,64 @@ import java.util.*;
 @Slf4j
 public class UserController {
 
-    RedisUtil redisUtil = new RedisUtil();
-    User user1 = new User(1, "admin", "admin", "A1");
-    User user2 = new User(2, "admin2", "admin1", "A1");
-    List<User> users = new ArrayList<User>() {{
-        add(user1);
-        add(user2);
-    }};
-
     @Autowired
     private Validator validator;
 
-    @PostMapping("/register")
-    public Result registerController(@RequestBody Map<String, String> person) {
-        // todo 去重
-        String username = person.get("username");
-        String password = person.get("password");
-        User user = new User(10, username, password, "B1");
-        Set<ConstraintViolation<User>> violationSet = validator.validate(user);
-        if (violationSet.size() != 0) {
-            return ResultGenerator.genFailResult("参数错误");
-        }
-        users.add(user);
-        Map<String, String> data = new HashMap<>();
-        String accessKey = JWTUtil.createAccessKey(username, user.getRoles(), 10);
-        data.put("access-key", accessKey);
-        redisUtil.setex(accessKey, 3600, user.getId().toString());
-        return ResultGenerator.genSuccessResult(data);
-    }
+//    RedisUtil redisUtil = new RedisUtil();
+//    User user1 = new User(1, "admin", "admin", "A1");
+//    User user2 = new User(2, "admin2", "admin1", "A1");
+//    List<User> users = new ArrayList<User>() {{
+//        add(user1);
+//        add(user2);
+//    }};
+//
 
-    @GetMapping("/login")
-    public Result loginController(String username, String password) {
-
-        Map<String, String> data = new HashMap<>();
-        for (User user : users) {
-            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                String accessKey = JWTUtil.createAccessKey(username, "A1", 10);
-                data.put("access-key", accessKey);
-                redisUtil.setex(accessKey, 3600, user.getId().toString());
-                return ResultGenerator.genSuccessResult(data);
-            }
-        }
-        return ResultGenerator.genFailResult("用户名或密码错误");
-    }
+//
+//    @PostMapping("/register")
+//    public Result registerController(@RequestBody Map<String, String> person) {
+//        // todo 去重
+//        String username = person.get("username");
+//        String password = person.get("password");
+//        User user = new User(username, password);
+//        Set<ConstraintViolation<User>> violationSet = validator.validate(user);
+//        if (violationSet.size() != 0) {
+//            return ResultGenerator.genFailResult("参数错误");
+//        }
+//        users.add(user);
+//        Map<String, String> data = new HashMap<>();
+//        String accessKey = JWTUtil.createAccessKey(username, user.getRoles(), 10);
+//        data.put("access-key", accessKey);
+//        redisUtil.setex(accessKey, 3600, user.getId().toString());
+//        return ResultGenerator.genSuccessResult(data);
+//    }
+//
+//    @GetMapping("/login")
+//    public Result loginController(String username, String password) {
+//
+//        Map<String, String> data = new HashMap<>();
+//        for (User user : users) {
+//            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+//                String accessKey = JWTUtil.createAccessKey(username, "A1", 10);
+//                data.put("access-key", accessKey);
+//                redisUtil.setex(accessKey, 3600, user.getId().toString());
+//                return ResultGenerator.genSuccessResult(data);
+//            }
+//        }
+//        return ResultGenerator.genFailResult("用户名或密码错误");
+//    }
 
     @GetMapping("/test")
     public Result testController() {
-        return ResultGenerator.genFailResult("success");
+        return ResultGenerator.genSuccessResult("server is success running！");
     }
 
 
-    @GetMapping("/loginv1")
-    public String login(User user) {
-        if (StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getPassword())) {
-            return "请输入用户名和密码！";
+    @PostMapping("/loginV2")
+    public Result login(@RequestBody Map<String, String> person) {
+        User user = new User(person.get("username"), person.get("password"));
+        Set<ConstraintViolation<User>> violationSet = validator.validate(user);
+        if (violationSet.size() != 0) {
+            return ResultGenerator.genFailResult("请输入用户名和密码");
         }
         //用户认证信息
         Subject subject = SecurityUtils.getSubject();
@@ -99,19 +103,19 @@ public class UserController {
         try {
             //进行验证，这里可以捕获异常，然后返回对应信息
             subject.login(usernamePasswordToken);
-//            subject.checkRole("admin");
-//            subject.checkPermissions("query", "add");
+            subject.checkRole("admin");
+            subject.checkPermissions("query", "add");
         } catch (UnknownAccountException e) {
             log.error("用户名不存在！", e);
-            return "用户名不存在！";
+            return ResultGenerator.genFailResult("请输入正确的用户名");
         } catch (AuthenticationException e) {
             log.error("账号或密码错误！", e);
-            return "账号或密码错误！";
+            return ResultGenerator.genFailResult("请输入正确的用户名和密码");
         } catch (AuthorizationException e) {
             log.error("没有权限！", e);
-            return "没有权限";
+            return ResultGenerator.genFailResult("没有权限");
         }
-        return "login success";
+        return ResultGenerator.genSuccessResult("登陆成功");
     }
 
     @RequiresRoles("admin")

@@ -13,11 +13,11 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class WebConfig {
-    @Bean
-    public FilterRegistrationBean testFilterRegistration() {
-        FilterRegistrationBean registration = new FilterRegistrationBean(new UserFilter());
-        registration.addUrlPatterns("/*");
-        registration.setName("userFilter");
-        return registration;
-    }
+//    @Bean
+//    public FilterRegistrationBean testFilterRegistration() {
+//        FilterRegistrationBean registration = new FilterRegistrationBean(new UserFilter());
+//        registration.addUrlPatterns("/*");
+//        registration.setName("userFilter");
+//        return registration;
+//    }
 }
