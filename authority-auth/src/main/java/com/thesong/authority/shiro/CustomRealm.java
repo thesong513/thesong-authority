@@ -5,6 +5,7 @@ import com.thesong.authority.entity.Role;
 import com.thesong.authority.entity.User;
 import com.thesong.authority.service.LoginService;
 import com.thesong.authority.service.SpringContextBeanService;
+import com.thesong.common.utils.ComUtil;
 import com.thesong.common.utils.JWTUtil;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -16,6 +17,9 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * @Author thesong
