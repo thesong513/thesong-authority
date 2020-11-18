@@ -1,5 +1,7 @@
 package com.thesong.authority.controller;
 
+import com.alibaba.fastjson.JSONObject;
+import com.thesong.authority.annotation.ValidationParam;
 import com.thesong.authority.entity.User;
 import com.thesong.common.response.Result;
 import com.thesong.common.response.ResultGenerator;
@@ -35,8 +37,6 @@ import java.util.*;
 @Slf4j
 public class UserController {
 
-    @Autowired
-    private Validator validator;
 
 //    RedisUtil redisUtil = new RedisUtil();
 //    User user1 = new User(1, "admin", "admin", "A1");
@@ -88,34 +88,31 @@ public class UserController {
 
 
     @PostMapping("/loginV2")
-    public Result login(@RequestBody Map<String, String> person) {
-        User user = new User(person.get("username"), person.get("password"));
-        Set<ConstraintViolation<User>> violationSet = validator.validate(user);
-        if (violationSet.size() != 0) {
-            return ResultGenerator.genFailResult("请输入用户名和密码");
-        }
+    public Result login(@ValidationParam("username ,password") @RequestBody JSONObject requestJson) throws Exception{
+        User user = new User(requestJson.get("username").toString(), requestJson.get("password").toString());
+        return ResultGenerator.genSuccessResult();
         //用户认证信息
-        Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(
-                user.getUsername(),
-                user.getPassword()
-        );
-        try {
-            //进行验证，这里可以捕获异常，然后返回对应信息
-            subject.login(usernamePasswordToken);
-            subject.checkRole("admin");
-            subject.checkPermissions("query", "add");
-        } catch (UnknownAccountException e) {
-            log.error("用户名不存在！", e);
-            return ResultGenerator.genFailResult("请输入正确的用户名");
-        } catch (AuthenticationException e) {
-            log.error("账号或密码错误！", e);
-            return ResultGenerator.genFailResult("请输入正确的用户名和密码");
-        } catch (AuthorizationException e) {
-            log.error("没有权限！", e);
-            return ResultGenerator.genFailResult("没有权限");
-        }
-        return ResultGenerator.genSuccessResult("登陆成功");
+//        Subject subject = SecurityUtils.getSubject();
+//        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(
+//                user.getUsername(),
+//                user.getPassword()
+//        );
+//        try {
+//            //进行验证，这里可以捕获异常，然后返回对应信息
+//            subject.login(usernamePasswordToken);
+//            subject.checkRole("admin");
+//            subject.checkPermissions("query", "add");
+//        } catch (UnknownAccountException e) {
+//            log.error("用户名不存在！", e);
+//            return ResultGenerator.genFailResult("请输入正确的用户名");
+//        } catch (AuthenticationException e) {
+//            log.error("账号或密码错误！", e);
+//            return ResultGenerator.genFailResult("请输入正确的用户名和密码");
+//        } catch (AuthorizationException e) {
+//            log.error("没有权限！", e);
+//            return ResultGenerator.genFailResult("没有权限");
+//        }
+//        return ResultGenerator.genSuccessResult("登陆成功");
     }
 
     @RequiresRoles("admin")
