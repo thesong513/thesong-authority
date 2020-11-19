@@ -1,14 +1,19 @@
 package com.thesong.common.utils;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.joda.time.DateTime;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
+
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
 
 /**
  * @Author thesong
@@ -17,25 +22,19 @@ import java.security.Key;
  * @Describe
  */
 public class JWTUtil {
-    protected static String key = "thesong";
 
-    /**
-     * 解析accesskey的密文
-     *
-     * @param accessKey
-     * @return plain
-     */
-    public static Claims parseAccessKey(String accessKey) {
-        if ("".equals(accessKey)) {
-            return null;
-        }
+    private static final long EXPIRE_TIME = 24*60*60*1000;
+
+    public static boolean verify(String token, Integer userId, String secret) {
         try {
-            return Jwts.parser()
-                    .setSigningKey(DatatypeConverter.parseBase64Binary(key))
-                    .parseClaimsJws(accessKey)
-                    .getBody();
-        } catch (Exception e) {
-            return null;
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .withClaim("userId", userId)
+                    .build();
+            verifier.verify(token);
+            return true;
+        } catch (Exception exception) {
+            return false;
         }
     }
 
@@ -46,22 +45,27 @@ public class JWTUtil {
      * @return 密文
      */
 
-    public static String createAccessKey(String username, String roles, int expirDays) {
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-        //生成签名密钥
-        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(key);
+    public static Integer getUserId(String token) {
+        try {
+            DecodedJWT jwt = JWT.decode(token);
+            return jwt.getClaim("userId").asInt();
+        } catch (JWTDecodeException e) {
+            return null;
+        }
+    }
 
-        Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
-
-        //添加构成JWT的参数
-        JwtBuilder builder = Jwts.builder()
-                .claim("username", username)
-                .claim("roles", roles)
-                .setExpiration(DateTime.now().plusDays(expirDays).toDate()) // 设置超时时间
-                .signWith(signatureAlgorithm, signingKey);
-
-        //生成JWT
-        return builder.compact();
+    public static String sign(Integer userId, String secret) {
+        try {
+            Date date = new Date(System.currentTimeMillis()+EXPIRE_TIME);
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            // 附带username信息
+            return JWT.create()
+                    .withClaim("userId", userId)
+                    .withExpiresAt(date)
+                    .sign(algorithm);
+        } catch (UnsupportedEncodingException e) {
+            return null;
+        }
     }
 
 

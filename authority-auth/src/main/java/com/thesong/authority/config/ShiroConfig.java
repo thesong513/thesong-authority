@@ -101,7 +101,8 @@ public class ShiroConfig {
         filterRuleMap.put("/v2/api-docs", "anon");
         filterRuleMap.put("/webjars/springfox-swagger-ui/**", "anon");
         // 所有请求通过我们自己的JWT Filter
-        filterRuleMap.put("/**", "jwt");
+        filterRuleMap.put("/**", "anon");
+//        filterRuleMap.put("/**", "jwt");
         filterRuleMap.putAll(getUrlAndMethodSet());
         factoryBean.setFilterChainDefinitionMap(filterRuleMap);
         return factoryBean;

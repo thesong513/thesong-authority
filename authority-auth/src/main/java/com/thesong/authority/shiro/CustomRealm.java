@@ -1,25 +1,23 @@
 package com.thesong.authority.shiro;
 
-import com.thesong.authority.entity.Permissions;
-import com.thesong.authority.entity.Role;
-import com.thesong.authority.entity.User;
-import com.thesong.authority.service.LoginService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.thesong.authority.entity.TUser;
+import com.thesong.authority.entity.TUserRole;
+import com.thesong.authority.service.ITRoleService;
+import com.thesong.authority.service.ITUserRoleService;
+import com.thesong.authority.service.ITUserService;
 import com.thesong.authority.service.SpringContextBeanService;
-import com.thesong.common.utils.ComUtil;
 import com.thesong.common.utils.JWTUtil;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.List;
 
 /**
  * @Author thesong
@@ -29,38 +27,53 @@ import java.util.HashSet;
  */
 public class CustomRealm extends AuthorizingRealm {
 
-    @Autowired
-    private LoginService loginService;
 
 
+
+
+
+
+//    @Override
+//    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
+//        return null;
+//    }
+//
+//    @Override
+//    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
+//        return null;
+//    }
 
     @Override
     public boolean supports(AuthenticationToken token) {
         return token instanceof JWTToken;
     }
 
-    /**
-     * 权限配置
-     * @param principalCollection
-     * @return
-     */
+    @Autowired
+    private ITUserRoleService itUserRoleService;
+
+    @Autowired
+    private ITRoleService itRoleService;
+
+    @Autowired
+    private ITUserService itUserService;
+
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        if (userToRoleService == null) {
-            this.userToRoleService = SpringContextBeanService.getBean(IUserToRoleService.class);
-        }
-        if (menuService == null) {
-            this.menuService = SpringContextBeanService.getBean(IMenuService.class);
-        }
-        if (roleService == null) {
-            this.roleService = SpringContextBeanService.getBean(IRoleService.class);
+        if (itUserRoleService == null) {
+            this.itUserRoleService = SpringContextBeanService.getBean(ITUserRoleService.class);
         }
 
-        String userNo = JWTUtil.getUserNo(principals.toString());
-        User user = userService.selectById(userNo);
+        if (itRoleService == null) {
+            this.itRoleService = SpringContextBeanService.getBean(ITRoleService.class);
+        }
+
+        Integer userId = JWTUtil.getUserId(principals.toString());
+        TUser tUser = itUserService.getById(userId);
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-        if(null != user){
-            UserToRole userToRole = userToRoleService.selectByUserNo(user.getUserNo());
+        if(null != tUser){
+            QueryWrapper<TUserRole> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("userId", tUser.getUserId());
+            List<TUserRole> tUserRole = itUserRoleService.list(queryWrapper);
 
         /*
         Role role = roleService.selectOne(new EntityWrapper<Role>().eq("role_code", userToRole.getRoleCode()));

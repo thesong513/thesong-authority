@@ -1,7 +1,6 @@
 package com.thesong.authority.shiro;
 
 import com.thesong.authority.annotation.CurrentUser;
-import com.thesong.authority.entity.User;
 import com.thesong.authority.exception.BusinessException;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -17,6 +16,15 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * @Describe
  */
 public class CurrentUserMethodArgumentResolver implements HandlerMethodArgumentResolver {
+//    @Override
+//    public boolean supportsParameter(MethodParameter methodParameter) {
+//        return false;
+//    }
+//
+//    @Override
+//    public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) throws Exception {
+//        return null;
+//    }
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.getParameterType().isAssignableFrom(User.class)
