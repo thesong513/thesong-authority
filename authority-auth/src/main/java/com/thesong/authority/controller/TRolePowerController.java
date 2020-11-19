@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2020-11-19
  */
 @RestController
-@RequestMapping("/t-role-power")
+@RequestMapping("/user")
 public class TRolePowerController {
 
 }

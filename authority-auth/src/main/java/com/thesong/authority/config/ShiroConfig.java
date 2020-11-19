@@ -14,6 +14,10 @@ import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSource
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.reflections.Reflections;
+import org.reflections.scanners.MethodAnnotationsScanner;
+import org.reflections.scanners.MethodParameterNamesScanner;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -112,11 +116,10 @@ public class ShiroConfig {
     Environment ev;
 
     public Map<String, String> getUrlAndMethodSet() {
-        String scanPackage = ev.getProperty("scanPackage");
+        String scanPackage = "com.thesong.authority";
         String contextPath = ev.getProperty("server.servlet.context-path");
-        Reflections reflections = new Reflections(scanPackage);
-        Set<Class<?>> classesList = reflections.getTypesAnnotatedWith(Controller.class);
-        classesList.addAll(reflections.getTypesAnnotatedWith(RestController.class));
+        Reflections reflections = new Reflections(scanPackage, new MethodAnnotationsScanner(), new TypeAnnotationsScanner(), new SubTypesScanner(), new MethodParameterNamesScanner());
+        Set<Class<?>> classesList = reflections.getTypesAnnotatedWith(RestController.class);
         Map<String, String> filterRuleMap = new LinkedHashMap<>();
         for (Class<?> clazz : classesList) {
             String baseUrl = "";

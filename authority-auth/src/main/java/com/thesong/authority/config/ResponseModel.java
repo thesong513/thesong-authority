@@ -13,7 +13,7 @@ import java.io.Serializable;
 
 public class ResponseModel<T> implements Serializable {
     private static final long serialVersionUID = -1241360949457314497L;
-    private T result;
+    private T data;
     private String message;
     private String code;
 
@@ -23,8 +23,8 @@ public class ResponseModel<T> implements Serializable {
         response.setCharacterEncoding("UTF-8");
     }
 
-    public ResponseModel(T result, String message, String code) {
-        this.result = result;
+    public ResponseModel(T data, String code, String message) {
+        this.data = data;
         this.message = message;
         this.code = code;
     }
@@ -47,15 +47,15 @@ public class ResponseModel<T> implements Serializable {
 
 
 
-    public T getResult() {
-        return this.result;
+    public T getData() {
+        return this.data;
     }
 
-    public void setResult(T result) {
-        this.result = result;
+    public void setData(T data) {
+        this.data = data;
     }
 
     public String toString() {
-        return "ResponseModel [ result=" + this.result +  ", message=" + this.message + ", code=" + this.code + "]";
+        return "ResponseModel [ data=" + this.data +  ", message=" + this.message + ", code=" + this.code + "]";
     }
 }

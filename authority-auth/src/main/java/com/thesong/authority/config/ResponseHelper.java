@@ -35,7 +35,6 @@ public class ResponseHelper<T> implements Serializable {
         return failedWith(model, CodeEnum.ERROR.getCode(), CodeEnum.ERROR.getMsg());
     }
 
-
     public static <T> ResponseModel<T> failedWith(T datas, String code, String msg) {
         return new ResponseModel<>(datas, code, msg);
     }
