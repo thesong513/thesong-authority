@@ -35,7 +35,7 @@ public class TPowerController {
     }
 
     @GetMapping("/test1")
-    @RequiresPermissions(value = {"user:list"})
+    @RequiresPermissions(value = {"admin:1"})
     public ResponseModel<TPower> userController() {
         TPower power = powerService.getById(1);
         return ResponseHelper.succeed(power);

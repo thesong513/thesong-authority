@@ -64,6 +64,11 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+        </dependency>
+
 
         <dependency>
             <groupId>com.baomidou</groupId>

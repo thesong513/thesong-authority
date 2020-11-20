@@ -1,8 +1,11 @@
 package com.thesong.authority.config;
 
 import com.thesong.authority.constant.CodeEnum;
+import com.thesong.authority.exception.BusinessException;
 import com.thesong.authority.exception.ParamJsonException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.ShiroException;
+import org.apache.shiro.authc.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -40,36 +43,36 @@ public class AllControllerAdvice {
      * @param e
      * @return
      */
-//    @ResponseStatus(HttpStatus.OK)
-//    @ExceptionHandler(ShiroException.class)
-//    @ResponseBody
-//    public ResponseModel<String> handleShiroException(ShiroException e) {
-//        return ResponseHelper.failedWith(null, CodeEnum.IDENTIFICATION_ERROR.getCode(),CodeEnum.IDENTIFICATION_ERROR.getMsg());
-//    }
-//
-//    @ResponseStatus(HttpStatus.OK)
-//    @ExceptionHandler(AuthenticationException.class)
-//    @ResponseBody
-//    public ResponseModel<String> handleShiroException(AuthenticationException e) {
-//        return ResponseHelper.failedWith(null, CodeEnum.IDENTIFICATION_ERROR.getCode(),CodeEnum.IDENTIFICATION_ERROR.getMsg());
-//    }
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler(ShiroException.class)
+    @ResponseBody
+    public ResponseModel<String> handleShiroException(ShiroException e) {
+        return ResponseHelper.failedWith(null, CodeEnum.IDENTIFICATION_ERROR.getCode(),CodeEnum.IDENTIFICATION_ERROR.getMsg());
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseBody
+    public ResponseModel<String> handleShiroException(AuthenticationException e) {
+        return ResponseHelper.failedWith(null, CodeEnum.IDENTIFICATION_ERROR.getCode(),CodeEnum.IDENTIFICATION_ERROR.getMsg());
+    }
 
     /**
      * 捕捉BusinessException自定义抛出的异常
      * @return
      */
-//    @ResponseStatus(HttpStatus.OK)
-//    @ExceptionHandler(BusinessException.class)
-//    @ResponseBody
-//    public ResponseModel handleBusinessException(BusinessException e) {
-//        String message = e.getMessage();
-//        if(message.indexOf(":--:") > 0){
-//            String[] split = message.split(":--:");
-//            return ResponseHelper.failedWith(null,split[1],split[0]);
-//        }
-//        return ResponseHelper.failedWith(null,CodeEnum.DATA_ERROR.getCode(),message);
-//    }
-//
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler(BusinessException.class)
+    @ResponseBody
+    public ResponseModel handleBusinessException(BusinessException e) {
+        String message = e.getMessage();
+        if(message.indexOf(":--:") > 0){
+            String[] split = message.split(":--:");
+            return ResponseHelper.failedWith(null,split[1],split[0]);
+        }
+        return ResponseHelper.failedWith(null,CodeEnum.DATA_ERROR.getCode(),message);
+    }
+
 //    @ResponseStatus(HttpStatus.OK)
 //    @ExceptionHandler(TemplateInputException.class)
 //    @ResponseBody
@@ -108,7 +111,7 @@ public class AllControllerAdvice {
     @ResponseStatus(HttpStatus.OK)
     public ResponseModel<String> errorHandler(Exception ex) {
         ex.printStackTrace();
-        log.error("接口出现严重异常：{}", ex.getMessage());
+        log.error("接口出现异常：{}", ex.getMessage());
         return ResponseHelper.failed2Message(CodeEnum.ERROR.getMsg());
     }
 

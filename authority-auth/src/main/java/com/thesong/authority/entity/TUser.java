@@ -1,6 +1,7 @@
 package com.thesong.authority.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
@@ -35,6 +36,9 @@ public class TUser implements Serializable {
 
     @ApiModelProperty(value = "用户状态(0-删除，1-正常，2-被禁)")
     private Integer ban;
+
+    @TableField(exist = false)
+    private String token;
 
 
 }

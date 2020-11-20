@@ -14,4 +14,16 @@ public final class Constant {
     public static final int BYTE_BUFFER = 1024;
 
     public static Set<String> METHOD_URL_SET = Sets.newConcurrentHashSet();
+    public class RoleType{
+        //超级管理员
+        public static final String SYS_ASMIN_ROLE= "sysadmin";
+        //管理员
+        public static final String ADMIN= "admin";
+        //普通用户
+        public static final String USER= "user";
+    }
+
+    public static Integer DEFAULT_ROLE_CODE = 3;
+
+
 }

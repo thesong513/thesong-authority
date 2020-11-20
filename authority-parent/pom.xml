@@ -41,6 +41,7 @@
         <com.google.guava.version>30.0-jre</com.google.guava.version>
         <org.reflections.version>0.9.12</org.reflections.version>
         <velocity-engine-core.version>2.2</velocity-engine-core.version>
+        <jbcrypt.version>0.4</jbcrypt.version>
 
 
     </properties>
@@ -65,12 +66,19 @@
                 <version>${springfox-swagger-ui.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.mindrot</groupId>
+                <artifactId>jbcrypt</artifactId>
+                <version>${jbcrypt.version}</version>
+            </dependency>
+
 
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
                 <version>${commons-codec.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
