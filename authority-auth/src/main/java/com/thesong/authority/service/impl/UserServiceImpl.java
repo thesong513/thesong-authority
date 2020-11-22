@@ -4,22 +4,25 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.thesong.authority.constant.CodeEnum;
 import com.thesong.authority.constant.Constant;
-import com.thesong.authority.entity.TUser;
-import com.thesong.authority.entity.TUserRole;
+import com.thesong.authority.entity.Role;
+import com.thesong.authority.entity.User;
+import com.thesong.authority.entity.UserRole;
 import com.thesong.authority.exception.BusinessException;
-import com.thesong.authority.mapper.TUserMapper;
-import com.thesong.authority.service.ITRoleService;
-import com.thesong.authority.service.ITUserRoleService;
-import com.thesong.authority.service.ITUserService;
+import com.thesong.authority.mapper.UserMapper;
+import com.thesong.authority.service.IRoleService;
+import com.thesong.authority.service.IUserRoleService;
+import com.thesong.authority.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
 import com.thesong.common.utils.ComUtil;
+import com.thesong.common.utils.GenerationSequenceUtil;
 import com.thesong.common.utils.JWTUtil;
+import com.thesong.common.utils.StringUtil;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,32 +31,35 @@ import java.util.Map;
  * </p>
  *
  * @author thesong
- * @since 2020-11-19
+ * @since 2020-11-22
  */
 @Service
-public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser> implements ITUserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
 
     @Autowired
-    private ITUserService itUserService;
+    private IUserService iUserService;
 
     @Autowired
-    private ITRoleService itRoleService;
+    private IRoleService iRoleService;
     @Autowired
-    private ITUserRoleService itUserRoleService;
+    private IUserRoleService iUserRoleService;
 
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
-    public TUser getUserByUserName(String username) {
-        QueryWrapper<TUser> queryWrapper = new QueryWrapper<TUser>();
-        queryWrapper.eq("user_name",username).last("limit 1");
-        return itUserService.getOne(queryWrapper);
+    public User getUserByUserName(String username) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_name", username);
+        return iUserService.getOne(queryWrapper);
+
     }
 
     @Override
     public Map<String, Object> checkUsernameAndPassword(JSONObject requestJson) throws Exception {
         String username = requestJson.getString("username");
         Map<String, Object> result = new HashMap<>();
-        TUser user = this.getUserByUserName(username);
+        User user = this.getUserByUserName(username);
         if(!ComUtil.isEmpty(user) && user.getBan()!=1){
             throw new BusinessException(CodeEnum.ACCOUNT_ERROR.getMsg(), CodeEnum.ACCOUNT_ERROR.getCode());
         }
@@ -66,26 +72,29 @@ public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser> implements
     }
 
     @Override
-    public TUser updateForgetPasswd(JSONObject requestJson) throws Exception {
+    public User updateForgetPasswd(JSONObject requestJson) throws Exception {
         return null;
     }
 
     @Override
-    public TUser insertUser(JSONObject requestJson) throws Exception {
-        TUser user = requestJson.toJavaObject(TUser.class);
+    public User insertUser(JSONObject requestJson) throws Exception {
+        User user = requestJson.toJavaObject(User.class);
         if(!ComUtil.isEmpty(this.getUserByUserName(user.getUserName()))){
             throw new BusinessException(CodeEnum.INVALID_USER_EXIST.getMsg(),CodeEnum.INVALID_USER_EXIST.getCode());
         }
         user.setPassword(BCrypt.hashpw("123456", BCrypt.gensalt()));
+        user.setUserId(GenerationSequenceUtil.generateUUID("user"));
         boolean save = this.save(user);
         if(save) {
-            TUserRole userRole = new TUserRole();
+            UserRole userRole = new UserRole();
             userRole.setUserId(user.getUserId());
-            userRole.setRoleId(Constant.DEFAULT_ROLE_CODE);
-            itUserRoleService.save(userRole);
+            Role role = iRoleService.getRoleByRoleName(Constant.RoleType.DEFAULT_USER);
+            if(null!=role) {
+                userRole.setRoleId(role.getRoleId());
+                iUserRoleService.save(userRole);
+            }
         }
         return user;
     }
-
 
 }
