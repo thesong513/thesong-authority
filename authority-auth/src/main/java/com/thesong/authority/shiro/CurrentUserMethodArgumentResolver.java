@@ -1,7 +1,7 @@
 package com.thesong.authority.shiro;
 
 import com.thesong.authority.annotation.CurrentUser;
-import com.thesong.authority.entity.TUser;
+import com.thesong.authority.entity.User;
 import com.thesong.authority.exception.BusinessException;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -20,13 +20,13 @@ public class CurrentUserMethodArgumentResolver implements HandlerMethodArgumentR
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterType().isAssignableFrom(TUser.class)
+        return parameter.getParameterType().isAssignableFrom(User.class)
                 && parameter.hasParameterAnnotation(CurrentUser.class);
     }
 
     @Override
     public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest webRequest, WebDataBinderFactory webDataBinderFactory) throws Exception {
-        TUser user = (TUser) webRequest.getAttribute("currentUser", RequestAttributes.SCOPE_REQUEST);
+        User user = (User) webRequest.getAttribute("currentUser", RequestAttributes.SCOPE_REQUEST);
         if (user == null) {
             throw new BusinessException("获取用户信息失败");
         }

@@ -20,10 +20,11 @@ public final class Constant {
         //管理员
         public static final String ADMIN= "admin";
         //普通用户
-        public static final String USER= "user";
+        public static final String GUEST= "guest";
+        //默認用戶
+        public static final String DEFAULT_USER = GUEST;
     }
 
-    public static Integer DEFAULT_ROLE_CODE = 3;
 
 
 }

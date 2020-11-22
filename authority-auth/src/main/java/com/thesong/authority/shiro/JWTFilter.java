@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.thesong.authority.config.ResponseHelper;
 import com.thesong.authority.constant.CodeEnum;
 import com.thesong.authority.constant.Constant;
-import com.thesong.authority.entity.TUser;
+import com.thesong.authority.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -86,8 +86,8 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
 
     private void setUserBean(ServletRequest request, ServletResponse response, JWTToken token) {
         Object principal = SecurityUtils.getSubject().getPrincipal();
-        if(principal instanceof TUser){
-            TUser userBean =(TUser) principal;
+        if(principal instanceof User){
+            User userBean =(User) principal;
             request.setAttribute("currentUser", userBean);
         }
     }

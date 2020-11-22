@@ -1,5 +1,6 @@
 package com.thesong.authority.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -12,18 +13,19 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @author thesong
- * @since 2020-11-19
+ * @since 2020-11-22
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="TUserRole对象", description="")
-public class TUserRole implements Serializable {
+@TableName("t_user_role")
+@ApiModel(value="UserRole对象", description="")
+public class UserRole implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer userId;
+    private String userId;
 
-    private Integer roleId;
+    private String roleId;
 
 
 }

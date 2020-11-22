@@ -1,6 +1,6 @@
 package com.thesong.authority.mapper;
 
-import com.thesong.authority.entity.TRole;
+import com.thesong.authority.entity.UserRole;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -10,10 +10,9 @@ import org.apache.ibatis.annotations.Mapper;
  * </p>
  *
  * @author thesong
- * @since 2020-11-19
+ * @since 2020-11-22
  */
-
 @Mapper
-public interface TRoleMapper extends BaseMapper<TRole> {
+public interface UserRoleMapper extends BaseMapper<UserRole> {
 
 }

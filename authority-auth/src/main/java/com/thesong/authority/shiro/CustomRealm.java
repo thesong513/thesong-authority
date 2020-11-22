@@ -42,19 +42,19 @@ public class CustomRealm extends AuthorizingRealm {
     }
 
     @Autowired
-    private ITUserRoleService itUserRoleService;
+    private IUserRoleService iUserRoleService;
 
     @Autowired
-    private ITRoleService itRoleService;
+    private IRoleService iRoleService;
 
     @Autowired
-    private ITUserService itUserService;
+    private IUserService iUserService;
 
     @Autowired
-    private ITPowerService itPowerService;
+    private IPowerService iPowerService;
 
     @Autowired
-    private ITRolePowerService itRolePowerService;
+    private IRolePowerService iRolePowerService;
 
     /**
      * 只有当需要检测用户权限的时候才会调用此方法，例如checkRole,checkPermission之类的
@@ -62,14 +62,14 @@ public class CustomRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
 
-        Integer userId = JWTUtil.getUserId(principals.toString());
-        TUser tUser = itUserService.getById(userId);
+        String userId = JWTUtil.getUserId(principals.toString());
+        User user = iUserService.getById(userId);
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-        if (null != tUser) {
-            Set<TRole> roles = itRoleService.getRolesByUser(tUser);
-            Set<String> rolenames = roles.stream().map(TRole::getRoleName).collect(Collectors.toSet());
-            Set<TPower> powers = itPowerService.getPowersByUser(tUser);
-            Set<String> powernames = powers.stream().map(TPower::getOperation).collect(Collectors.toSet());
+        if (null != user) {
+            Set<Role> roles = iRoleService.getRolesByUser(user);
+            Set<String> rolenames = roles.stream().map(Role::getRoleName).collect(Collectors.toSet());
+            Set<Power> powers = iPowerService.getPowersByUser(user);
+            Set<String> powernames = powers.stream().map(Power::getOperation).collect(Collectors.toSet());
             // 类中用@RequiresPermissions("user:list") 对应数据库中code字段来控制controller
             simpleAuthorizationInfo.addRoles(rolenames);
             simpleAuthorizationInfo.addStringPermissions(powernames);
@@ -89,15 +89,15 @@ public class CustomRealm extends AuthorizingRealm {
         String token = (String) auth.getCredentials();
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         if (Constant.METHOD_URL_SET.contains(request.getRequestURI())) {
-            request.setAttribute("currentUser", new TUser());
+            request.setAttribute("currentUser", new User());
             return new SimpleAuthenticationInfo(token, token, this.getName());
         }
         // 解密获得username，用于和数据库进行对比
-        Integer userId = JWTUtil.getUserId(token);
+        String userId = JWTUtil.getUserId(token);
         if (userId == null) {
             throw new AuthenticationException("token invalid");
         }
-        TUser user = itUserService.getById(userId);
+        User user = iUserService.getById(userId);
         if (user == null) {
             throw new AuthenticationException("User didn't existed!");
         }

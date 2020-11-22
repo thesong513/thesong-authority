@@ -25,7 +25,7 @@ public class JWTUtil {
 
     private static final long EXPIRE_TIME = 24*60*60*1000;
 
-    public static boolean verify(String token, Integer userId, String secret) {
+    public static boolean verify(String token, String userId, String secret) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             JWTVerifier verifier = JWT.require(algorithm)
@@ -45,16 +45,16 @@ public class JWTUtil {
      * @return 密文
      */
 
-    public static Integer getUserId(String token) {
+    public static String getUserId(String token) {
         try {
             DecodedJWT jwt = JWT.decode(token);
-            return jwt.getClaim("userId").asInt();
+            return jwt.getClaim("userId").asString();
         } catch (JWTDecodeException e) {
             return null;
         }
     }
 
-    public static String sign(Integer userId, String secret) {
+    public static String sign(String userId, String secret) {
         try {
             Date date = new Date(System.currentTimeMillis()+EXPIRE_TIME);
             Algorithm algorithm = Algorithm.HMAC256(secret);
