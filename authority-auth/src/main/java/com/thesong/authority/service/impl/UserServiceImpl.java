@@ -2,6 +2,7 @@ package com.thesong.authority.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.thesong.authority.constant.CodeEnum;
 import com.thesong.authority.constant.Constant;
 import com.thesong.authority.entity.Role;
@@ -16,7 +17,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.thesong.common.utils.ComUtil;
 import com.thesong.common.utils.GenerationSequenceUtil;
 import com.thesong.common.utils.JWTUtil;
-import com.thesong.common.utils.StringUtil;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,7 +52,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_name", username);
         return iUserService.getOne(queryWrapper);
-
     }
 
     @Override
@@ -72,9 +71,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public User updateForgetPasswd(JSONObject requestJson) throws Exception {
-        return null;
+    public void resetPassword(User currentUser, JSONObject requestJson) throws Exception {
+        if (!requestJson.getString("password").equals(requestJson.getString("rePassword"))) {
+            throw  new BusinessException(CodeEnum.INVALID_RE_PASSWORD.getMsg(),CodeEnum.INVALID_RE_PASSWORD.getCode());
+        }
+        if(!BCrypt.checkpw(requestJson.getString("oldPassword"), currentUser.getPassword())){
+            throw  new BusinessException(CodeEnum.INVALID_USERNAME_PASSWORD.getMsg(),CodeEnum.INVALID_USERNAME_PASSWORD.getCode());
+        }
+        currentUser.setPassword(BCrypt.hashpw(requestJson.getString("password"),BCrypt.gensalt()));
+        this.updateById(currentUser);
     }
+
 
     @Override
     public User insertUser(JSONObject requestJson) throws Exception {
@@ -82,19 +89,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if(!ComUtil.isEmpty(this.getUserByUserName(user.getUserName()))){
             throw new BusinessException(CodeEnum.INVALID_USER_EXIST.getMsg(),CodeEnum.INVALID_USER_EXIST.getCode());
         }
-        user.setPassword(BCrypt.hashpw("123456", BCrypt.gensalt()));
+        user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
         user.setUserId(GenerationSequenceUtil.generateUUID("user"));
         boolean save = this.save(user);
-        if(save) {
-            UserRole userRole = new UserRole();
-            userRole.setUserId(user.getUserId());
+        if (save) {
             Role role = iRoleService.getRoleByRoleName(Constant.RoleType.DEFAULT_USER);
-            if(null!=role) {
-                userRole.setRoleId(role.getRoleId());
+            if (null != requestJson.get("rolename")) {
+                role = iRoleService.getRoleByRoleName(requestJson.getString("rolename"));
+            }
+            if (null != role) {
+                UserRole userRole = UserRole.builder().userId(user.getUserId()).roleId(role.getRoleId()).build();
                 iUserRoleService.save(userRole);
             }
         }
         return user;
     }
 
+    @Override
+    public Page<User> selectPageByConditionUser(Page<User> userPage, String roleName, Integer[] bans) {
+        Page<User> records = userPage.setRecords(userMapper.selectPageByConditionUser(userPage, roleName , bans));
+        return records;
+    }
+
 }
+
+

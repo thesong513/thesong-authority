@@ -1,7 +1,6 @@
 create table t_power
 (
-    id int auto_increment comment 'id' primary key ,
-    power_id   varchar(50) not null comment '权限id',
+    power_id   varchar(50) not null comment '权限id' primary key,
     power_name varchar(50) not null comment '权限类型',
     operation  varchar(50) not null comment '操作'
 );
@@ -21,8 +20,7 @@ INSERT INTO shiro.t_power (power_id, power_name, operation) VALUES ('12', '查�
 
 create table t_role
 (
-    id int auto_increment comment 'id' primary key ,
-    role_id   varchar(50) not null comment '角色id',
+    role_id   varchar(50) not null comment '角色id' primary key,
     role_name varchar(100)  not null comment '角色名字',
     ban       int default 1 not null comment '0-删除，1-未删除'
 );
@@ -53,9 +51,8 @@ INSERT INTO shiro.t_role_power (id, role_id, power_id) VALUES (12, '1', '12');
 
 create table t_user
 (
-    id int auto_increment comment 'id' primary key ,
-    user_id   varchar(50) not null comment 'user id',
-    user_name varchar(100)  not null comment '用户名',
+    user_id   varchar(50) not null comment 'user id' primary key,
+    user_name varchar(100)  not null unique comment '用户名',
     password  varchar(100)  not null comment '密码',
     ban       int default 1 not null comment '用户状态(0-删除，1-正常，2-被禁)'
 );

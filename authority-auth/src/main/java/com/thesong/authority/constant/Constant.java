@@ -22,7 +22,7 @@ public final class Constant {
         //普通用户
         public static final String GUEST= "guest";
         //默認用戶
-        public static final String DEFAULT_USER = GUEST;
+        public static final  String DEFAULT_USER = GUEST;
     }
 
 

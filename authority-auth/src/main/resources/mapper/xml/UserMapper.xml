@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thesong.authority.mapper.UserMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.thesong.authority.entity.User">
+        <id column="user_id" property="userId" />
+        <result column="user_name" property="userName" />
+        <result column="password" property="password" />
+        <result column="ban" property="ban" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        user_id AS userId, user_name AS userName, password AS password, ban
+    </sql>
+
+
+    <resultMap id="UserModel" type="com.thesong.authority.entity.User">
+        <id column="user_id" property="userId" />
+        <result column="user_name" property="userName" />
+        <result column="password" property="password" />
+        <result column="ban" property="ban" />
+        <result column="role_name" property="roleName" />
+    </resultMap>
+
+    <select id="selectPageByConditionUser"  resultMap="UserModel">
+        select u.*, r.role_name from t_user u, t_user_role t ,t_role r
+        where u.user_id =t.user_id AND  t.role_id =r.role_id
+        <if test="roleName != null and roleName != '' ">
+            and r.role_name =#{roleName}
+        </if>
+        and u.ban in
+        <foreach item="item" index="index" collection="bans"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+</mapper>

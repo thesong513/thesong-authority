@@ -20,8 +20,8 @@ public enum  CodeEnum {
     INVALID_USER_EXIST("20009","用户已存在"),
     INVALID_ROLE("20010","角色不存在"),
     USER_NO_PERMITION("20011","当前用户无该接口权限"),
+    INVALID_RE_PASSWORD("20012","两次输入密码不一致"),
     UPDATE_ROLEINFO_ERROR("20015","更新角色信息失败");
-
 
     private String respCode;
     private String respMsg;

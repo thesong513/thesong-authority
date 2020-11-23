@@ -1,11 +1,15 @@
 package com.thesong.authority.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import java.io.Serializable;
+import java.util.Set;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -26,6 +30,7 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "user id")
+    @TableId(value = "user_id")
     private String userId;
 
     @ApiModelProperty(value = "用户名")
@@ -38,9 +43,15 @@ public class User implements Serializable {
     @TableLogic(value = "1",delval = "0")
     private Integer ban;
 
-
     @TableField(exist = false)
     private String token;
+
+    @TableField(exist = false)
+    private Set<Role> roles;
+
+    @TableField(exist = false)
+    private String roleName;
+
 
 
 }
